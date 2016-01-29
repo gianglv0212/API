@@ -10,41 +10,62 @@ namespace API.Common
 {
     public class Common
     {
-        public static string GetJSONString(DataTable Dt)
+        public static void DataSetToJson(DataSet ds)
         {
-            string[] StrDc = new string[Dt.Columns.Count];
-            string HeadStr = string.Empty;
-
-            for (int i = 0; i < Dt.Columns.Count; i++)
-            {
-                StrDc[i] = Dt.Columns[i].Caption;
-                HeadStr += "\"" + StrDc[i] + "\" : \"" + StrDc[i] + i.ToString() + "¾" + "\",";
-            }
-
-            HeadStr = HeadStr.Substring(0, HeadStr.Length - 1);
-
-            StringBuilder Sb = new StringBuilder();
-            Sb.Append("{\"" + Dt.TableName + "\" : [");
-
-            for (int i = 0; i < Dt.Rows.Count; i++)
-            {
-                string TempStr = HeadStr;
-                Sb.Append("{");
-
-                for (int j = 0; j < Dt.Columns.Count; j++)
-                {
-                    TempStr = TempStr.Replace(Dt.Columns[j] + j.ToString() + "¾", Dt.Rows[i][j].ToString());
-                }
-                Sb.Append(TempStr + "},");
-            }
-
-            Sb = new StringBuilder(Sb.ToString().Substring(0, Sb.ToString().Length - 1));
-            Sb.Append("]}");
-
-            return Sb.ToString();
+            string JSONresult;
+            JSONresult = JsonConvert.SerializeObject(ds);
+            //return JSONresult;
+            System.Web.HttpContext.Current.Response.Write(JSONresult);
         }
+        public static string DataSetToString(DataSet ds)
+        {
+            string JSONresult;
+            JSONresult = JsonConvert.SerializeObject(ds);
+            return JSONresult;
+            //System.Web.HttpContext.Current.Response.Write(JSONresult);
+        }
+        public static string DataTableToJsonObj(DataTable dt)
+        {
 
-
+            DataSet ds = new DataSet();
+            ds.Merge(dt);
+            StringBuilder JsonString = new StringBuilder();
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                JsonString.Append("{");
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    //JsonString.Append("{");
+                    for (int j = 0; j < ds.Tables[0].Columns.Count; j++)
+                    {
+                        if (j < ds.Tables[0].Columns.Count - 1)
+                        {
+                            JsonString.Append("\"" + ds.Tables[0].Columns[j].ColumnName.ToString() + "\":" + "\"" + ds.Tables[0].Rows[i][j].ToString() + "\",");
+                        }
+                        else if (j == ds.Tables[0].Columns.Count - 1)
+                        {
+                            JsonString.Append("\"" + ds.Tables[0].Columns[j].ColumnName.ToString() + "\":" + "\"" + ds.Tables[0].Rows[i][j].ToString() + "\"");
+                        }
+                    }
+                    if (i == ds.Tables[0].Rows.Count - 1)
+                    {
+                        //JsonString.Append("}");
+                        JsonString.Append("");
+                    }
+                    else
+                    {
+                        //JsonString.Append("},");
+                        JsonString.Append(",");
+                    }
+                }
+                JsonString.Append("}");
+                return JsonString.ToString();
+            }
+            else
+            {
+                return null;
+            }
+        }  
         public static string ds2json(DataSet ds)
         {
             return JsonConvert.SerializeObject(ds, Formatting.Indented);

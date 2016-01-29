@@ -197,6 +197,7 @@
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\CateModels.cs" />
     <Compile Include="Models\Config.cs" />
+    <Compile Include="Models\FileModels.cs" />
     <Compile Include="Models\MovieModels.cs" />
     <Compile Include="Models\OptionVideoModels.cs" />
     <Compile Include="Models\VideoModels.cs" />

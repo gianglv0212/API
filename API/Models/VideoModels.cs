@@ -26,5 +26,12 @@ namespace API.Models
             cmd.Parameters.Add(new SqlParameter("@intEndRow", intEndRow));
             return getDataSet(cmd);
         }
+
+        public DataSet Video_Detail(int videoid)
+        {
+            SqlCommand cmd = new SqlCommand("API_GetVideoDetail");
+            cmd.Parameters.Add(new SqlParameter("@id", videoid));
+            return getDataSet(cmd);
+        }
     }
 }
